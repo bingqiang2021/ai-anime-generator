@@ -1,89 +1,114 @@
-# ai-anime-generator提示词
-ai-anime-generator
+# AI动漫生成器
 
-帮我构建一个ai动漫生成的web应用：
+一个基于AI的动漫视频自动生成Web应用。
 
-1、一句话通过deepseek生成故事，产品前端参考：/Users/brucejan/Downloads/stitch ； 
+## 功能特性
 
-2、使用deepseek针对故事做内容切片，切4个片段；
+- 通过Deepseek AI一句话生成完整故事
+- 自动将故事切分为4个场景片段
+- 使用Seedream-v4生成分镜图像
+- 使用Hailuo-2.3生成视频动画
+- 自动拼接所有视频为完整作品
 
- 3、针对故事片段采用seedream-v4（https://wavespeed.ai/models/bytedance/seedre am-v4）生成分镜； 
+## 技术栈
 
-4、使用hailuo-2.3（https://wavespeed.ai/models/minimax/hailuo-2.3/i2v-pro） 针对分镜图像生成视频； 
+### 前端
+- React 18 + TypeScript
+- Tailwind CSS
+- React Router
+- Axios
 
-5、将视频拼凑起来 
+### 后端
+- Node.js + Express + TypeScript
+- FFmpeg（视频处理）
+- Axios
 
-补充： 
+### AI服务
+- Deepseek API：故事生成和分片
+- Wavespeed API：图像和视频生成
 
-1、seedream-v4和hailuo-2.3使用wavespeed的API，deepseek使用官方的apikey，两个apikey可以在产品里配置
+## 快速开始
 
-2、curl --location --request POST  'https://api.wavespeed.ai/api/v3/bytedance/seedream-v4' --header "Content-Type: application/json" --header "Authorization: Bearer ${WAVESPEED_API_KEY}" --data-raw '{ "enable_base64_output": false, "enable_sync_mode": false, "prompt": "American retro style: a girl wearing a polka-dot dress with  sunglasses adorning her head.", "size": "2048*2048" }' Query Result curl --location --request GET  "https://api.wavespeed.ai/api/v3/predictions/${requestId}/result" --header "Authorization: Bearer ${WAVESPEED_API_KEY}" 
+### 环境要求
 
-3、curl --location --request POST  'https://api.wavespeed.ai/api/v3/minimax/hailuo-2.3/i2v-pro' --header "Content-Type: application/json" --header "Authorization: Bearer ${WAVESPEED_API_KEY}" --data-raw '{ "enable_prompt_expansion": true, "image": "https://d1q70pf5vjeyhc.cloudfront.net/media/92ecf66930134a49a5a425 b9def0c266/images/1761673269273441777_pFPLIEBx.jpeg", "prompt": "A passionate male and female dance duo performing a fiery,  high-energy Latin dance routine (like Salsa or Cha-Cha). They execute fast,  intricate footwork and sensual, rhythmic hip movements with visible  chemistry. The man leads the woman through a series of rapid spins and sharp  turns, culminating in a dramatic dip where her hair fans out, all under a  warm, intense spotlight on a wooden dance floor. Cinematic, passionate,  rhythmic, energetic, dynamic lighting, professional dancers, fiery  chemistry." }' Query Result curl --location --request GET  "https://api.wavespeed.ai/api/v3/predictions/${requestId}/result" --header "Authorization: Bearer ${WAVESPEED_API_KEY}"
+- Node.js >= 18
+- FFmpeg
+- npm 或 yarn
 
+### 安装
 
-#快速启动
+```bash
+# 克隆项目
+git clone <repository-url>
+cd ai-anime-generator
 
-  ##1、cd ai-anime-generator
+# 安装依赖
+npm install
+cd client && npm install
+cd ../server && npm install
+cd ..
+```
 
-  ## 2、安装依赖
-  npm install
-  cd client && npm install && cd ..
-  cd server && npm install && cd ..
+### 配置
 
-  ## 3、安装FFmpeg（如果未安装）
-  brew install ffmpeg  # macOS
+在 `server` 目录下创建 `.env` 文件：
 
-  ## 4、启动应用
-  npm run dev
+```env
+PORT=3001
+DEEPSEEK_API_KEY=your_deepseek_api_key
+WAVESPEED_API_KEY=your_wavespeed_api_key
+```
 
-  ## 5、访问：http://localhost:5173
+### 运行
 
-  使用步骤
+```bash
+# 开发模式（同时启动前后端）
+npm run dev
 
-  1. 配置API密钥
-    - 访问设置页面配置Deepseek和Wavespeed API密钥
-    - Deepseek: https://platform.deepseek.com
-    - Wavespeed: https://wavespeed.ai
-  2. 生成动漫
-    - 输入故事想法（例如："一个少年发现魔法书"）
-    - 点击"开始生成动漫"
-    - 等待15-30分钟完成
-  3. 下载分享
-    - 查看完整故事和分镜
-    - 下载最终视频
+# 或分别启动
+npm run dev:server  # 后端运行在 http://localhost:3001
+npm run dev:client  # 前端运行在 http://localhost:5173
+```
 
-  项目文件说明
+### 构建生产版本
 
-  | 文件                 | 说明        |
-  |--------------------|-----------|
-  | README.md          | 项目基本说明    |
-  | SETUP.md           | 详细安装和使用指南 |
-  | QUICKSTART.md      | 3分钟快速启动   |
-  | PROJECT_SUMMARY.md | 完整项目总结    |
+```bash
+npm run build
+npm start
+```
 
-  注意事项
+## API文档
 
-  ⚠️ 重要提示：
-  - 生成时间：15-30分钟（取决于API速度）
-  - API成本：每次生成需调用10次API（2次Deepseek + 8次Wavespeed）
-  - 需要FFmpeg：用于视频拼接
-  - 网络稳定：确保生成过程不中断
+### 故事生成
+```
+POST /api/story/generate
+Body: { prompt: string, apiKeys: { deepseek: string } }
+```
 
-  项目特色
+### 故事分片
+```
+POST /api/story/slice
+Body: { story: string, apiKeys: { deepseek: string } }
+```
 
-  ✨ 参考stitch设计：
-  - 深色主题（#191022背景色）
-  - 紫色品牌色（#7f13ec）
-  - Material Icons图标
-  - 流畅的响应式布局
+### 生成分镜图像
+```
+POST /api/image/generate
+Body: { prompt: string, apiKeys: { wavespeed: string } }
+```
 
-  🚀 完整功能：
-  - API密钥配置界面
-  - 实时生成进度显示
-  - 完整的错误处理
-  - 视频下载功能
+### 生成视频
+```
+POST /api/video/generate
+Body: { imageUrl: string, prompt: string, apiKeys: { wavespeed: string } }
+```
 
-  所有代码已准备就绪，可以立即使用！查看 PROJECT_SUMMARY.md
-  了解完整的项目架构和功能说明。
+### 拼接视频
+```
+POST /api/video/merge
+Body: { videoUrls: string[] }
+```
 
+## 许可证
+
+MIT
