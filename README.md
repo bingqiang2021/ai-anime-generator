@@ -24,20 +24,20 @@ ai-anime-generator
 
 #快速启动
 
-  cd ai-anime-generator
+  ##1、cd ai-anime-generator
 
-  # 安装依赖
+  ## 2、安装依赖
   npm install
   cd client && npm install && cd ..
   cd server && npm install && cd ..
 
-  # 安装FFmpeg（如果未安装）
+  ## 3、安装FFmpeg（如果未安装）
   brew install ffmpeg  # macOS
 
-  # 启动应用
+  ## 4、启动应用
   npm run dev
 
-  # 访问：http://localhost:5173
+  ## 5、访问：http://localhost:5173
 
   使用步骤
 
